@@ -44,8 +44,8 @@ protected:
   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
   UParticleSystem* TracerEffect;
 
-  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
-  int32 AmmoCount;
+  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (ClampMin = 0))
+  int32 CurrentAmmoCount;
 
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   TSubclassOf<UCameraShake> FireCamShake;
@@ -80,4 +80,5 @@ public:
 
   void StopFire();
 
+  void AddToAmmoCount(int32 AmountToAdd);
 };

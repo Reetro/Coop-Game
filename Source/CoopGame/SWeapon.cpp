@@ -33,7 +33,7 @@ ASWeapon::ASWeapon()
 
   RateOfFire = 600;
 
-  AmmoCount = 30;
+  CurrentAmmoCount = 0;
 }
 
 void ASWeapon::StartFire()
@@ -50,7 +50,7 @@ void ASWeapon::StopFire()
 
 void ASWeapon::Fire()
 {
-  if (AmmoCount > 0)
+  if (CurrentAmmoCount > 0)
   {
     AActor* MyOwner = GetOwner();
     if (MyOwner)
@@ -118,7 +118,7 @@ void ASWeapon::Fire()
 
       LastTimeFired = GetWorld()->TimeSeconds;
 
-      AmmoCount--;
+      CurrentAmmoCount--;
     }
   }
 }
@@ -175,4 +175,9 @@ void ASWeapon::PlayerFireEffects()
       UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComp, MuzzleSocketName);
     }
   }
+}
+
+void ASWeapon::AddToAmmoCount(int32 AmountToAdd)
+{
+  CurrentAmmoCount += AmountToAdd;
 }

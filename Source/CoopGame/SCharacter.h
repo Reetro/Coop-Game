@@ -65,9 +65,6 @@ protected:
 
   float DefaultFOV;
 
-  UPROPERTY(BlueprintReadOnly, Category = "Player")
-  ASWeapon* CurrentWeapon;
-
 public:
   // Called every frame
   virtual void Tick(float DeltaTime) override;
@@ -76,4 +73,7 @@ public:
   virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
   virtual FVector GetPawnViewLocation() const override;
+
+  UPROPERTY(BlueprintReadOnly, Category = "Player")
+    ASWeapon* CurrentWeapon;
 };

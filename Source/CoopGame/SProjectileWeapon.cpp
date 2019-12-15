@@ -6,7 +6,7 @@
 void ASProjectileWeapon::Fire()
 {
   AActor* MyOwner = GetOwner();
-  if (MyOwner && ProjectileClass && AmmoCount > 0)
+  if (MyOwner && ProjectileClass && CurrentAmmoCount > 0)
   {
     FVector EyeLocation;
     FRotator EyeRotation;
@@ -24,6 +24,6 @@ void ASProjectileWeapon::Fire()
 
     PlayerFireEffects();
 
-    AmmoCount--;
+    CurrentAmmoCount--;
   }
 }
