@@ -44,6 +44,9 @@ protected:
   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
   UParticleSystem* TracerEffect;
 
+  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+  int32 AmmoCount;
+
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   TSubclassOf<UCameraShake> FireCamShake;
 

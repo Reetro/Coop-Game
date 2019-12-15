@@ -65,6 +65,7 @@ protected:
 
   float DefaultFOV;
 
+  UPROPERTY(BlueprintReadOnly, Category = "Player")
   ASWeapon* CurrentWeapon;
 
 public:

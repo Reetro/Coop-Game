@@ -32,6 +32,8 @@ ASWeapon::ASWeapon()
   HeadShotDamageMultipler = 4;
 
   RateOfFire = 600;
+
+  AmmoCount = 30;
 }
 
 void ASWeapon::StartFire()
@@ -48,71 +50,76 @@ void ASWeapon::StopFire()
 
 void ASWeapon::Fire()
 {
-  AActor* MyOwner = GetOwner();
-  if (MyOwner)
+  if (AmmoCount > 0)
   {
-    FVector EyeLocation;
-    FRotator EyeRotation;
-   
-    MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-    FVector ShotDirection = EyeRotation.Vector();
-    FVector TraceRange = EyeLocation + (ShotDirection * 10000);
-    
-    FCollisionQueryParams QueryParams;
-    QueryParams.AddIgnoredActor(MyOwner);
-    QueryParams.AddIgnoredActor(this);
-    QueryParams.bTraceComplex = true;
-    QueryParams.bReturnPhysicalMaterial = true;
-
-    FVector TracerEndPoint = TraceRange;
-
-    FHitResult Hit;
-    if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceRange, COLLISION_WEAPON, QueryParams))
+    AActor* MyOwner = GetOwner();
+    if (MyOwner)
     {
-      // Blocking hit
-      AActor* HitActor = Hit.GetActor();
+      FVector EyeLocation;
+      FRotator EyeRotation;
 
-      EPhysicalSurface Surface = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+      MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
+      FVector ShotDirection = EyeRotation.Vector();
+      FVector TraceRange = EyeLocation + (ShotDirection * 10000);
 
-      float ActualDamage = BaseDamage;
+      FCollisionQueryParams QueryParams;
+      QueryParams.AddIgnoredActor(MyOwner);
+      QueryParams.AddIgnoredActor(this);
+      QueryParams.bTraceComplex = true;
+      QueryParams.bReturnPhysicalMaterial = true;
 
-      if (Surface == SURFACE_FLESHVULNERABLE)
+      FVector TracerEndPoint = TraceRange;
+
+      FHitResult Hit;
+      if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceRange, COLLISION_WEAPON, QueryParams))
       {
-        ActualDamage *= HeadShotDamageMultipler;
+        // Blocking hit
+        AActor* HitActor = Hit.GetActor();
+
+        EPhysicalSurface Surface = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+
+        float ActualDamage = BaseDamage;
+
+        if (Surface == SURFACE_FLESHVULNERABLE)
+        {
+          ActualDamage *= HeadShotDamageMultipler;
+        }
+
+        UGameplayStatics::ApplyPointDamage(HitActor, ActualDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
+
+        TracerEndPoint = Hit.TraceEnd;
+
+        UParticleSystem* SelectedEffect = nullptr;
+
+        switch (Surface)
+        {
+        case SurfaceType_Default:
+          SelectedEffect = DefaultImpactEffect;
+          break;
+        case SURFACE_FLESHDEFAULT:
+        case SURFACE_FLESHVULNERABLE:
+          SelectedEffect = FleshImpactEffect;
+          break;
+        }
+
+        if (SelectedEffect)
+        {
+          UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectedEffect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
+        }
+
       }
-      
-      UGameplayStatics::ApplyPointDamage(HitActor, ActualDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
 
-      TracerEndPoint = Hit.TraceEnd;
-
-      UParticleSystem* SelectedEffect = nullptr;
-
-      switch (Surface)
+      if (DebugWeaponDrawing > 0)
       {
-      case SurfaceType_Default:
-        SelectedEffect = DefaultImpactEffect;
-        break;
-      case SURFACE_FLESHDEFAULT:
-      case SURFACE_FLESHVULNERABLE:
-        SelectedEffect = FleshImpactEffect;
-        break;
+        DrawDebugLine(GetWorld(), EyeLocation, TraceRange, FColor::Red, false, 1.0f, 0, 1.0f);
       }
 
-      if (SelectedEffect)
-      {
-        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SelectedEffect, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
-      }
+      PlayerFireEffects(TracerEndPoint);
 
+      LastTimeFired = GetWorld()->TimeSeconds;
+
+      AmmoCount--;
     }
-
-    if (DebugWeaponDrawing > 0)
-    {
-      DrawDebugLine(GetWorld(), EyeLocation, TraceRange, FColor::Red, false, 1.0f, 0, 1.0f);
-    }
-
-    PlayerFireEffects(TracerEndPoint);
-
-    LastTimeFired = GetWorld()->TimeSeconds;
   }
 }
 
