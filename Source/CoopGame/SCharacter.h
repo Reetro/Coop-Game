@@ -24,6 +24,7 @@ protected:
   // Called when the game starts or when spawned
   virtual void BeginPlay() override;
 
+  /* Player input functions */
   void MoveFoward(float Value);
 
   void MoveRight(float Value);
@@ -40,9 +41,11 @@ protected:
 
   void StopFire();
 
+  /* Player Health Function */
   UFUNCTION()
   void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+  /* Player Default Components */
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
   UCameraComponent* CameraComp = nullptr;
 
@@ -68,7 +71,7 @@ protected:
 
   float DefaultFOV;
 
-  // Player has already died once
+  // Player has already died
   UPROPERTY(BlueprintReadOnly, Category = "Player")
   bool bDied;
 
