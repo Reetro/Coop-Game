@@ -2,6 +2,7 @@
 
 
 #include "SProjectileWeapon.h"
+#include "Kismet/GameplayStatics.h"
 
 void ASProjectileWeapon::Fire()
 {
@@ -23,6 +24,11 @@ void ASProjectileWeapon::Fire()
     GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, EyeRotation, SpawnParams);
 
     PlayerFireEffects();
+
+    if (FireSound)
+    {
+      UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+    }
 
     CurrentAmmoCount--;
   }

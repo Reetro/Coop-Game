@@ -109,6 +109,11 @@ void ASWeapon::Fire()
 
       }
 
+      if (FireSound)
+      {
+        UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+      }
+
       if (DebugWeaponDrawing > 0)
       {
         DrawDebugLine(GetWorld(), EyeLocation, TraceRange, FColor::Red, false, 1.0f, 0, 1.0f);

@@ -10,6 +10,7 @@ class USkeletalMeshComponent;
 class UDamageType;
 class UParticleSystem;
 class UCameraShake;
+class USoundBase;
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -49,6 +50,9 @@ protected:
 
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   TSubclassOf<UCameraShake> FireCamShake;
+
+  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
+  USoundBase* FireSound;
 
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   float BaseDamage;
