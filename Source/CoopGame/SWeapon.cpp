@@ -10,6 +10,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "CoopGame.h"
+#include "TimerManager.h"
 
 static int32 DebugWeaponDrawing = 0;
 FAutoConsoleVariableRef CVARDebugWeaponDrawing(
@@ -29,6 +30,20 @@ ASWeapon::ASWeapon()
 
   BaseDamage = 20.0f;
   HeadShotDamageMultipler = 4;
+
+  RateOfFire = 600;
+}
+
+void ASWeapon::StartFire()
+{
+  float FirstDelay = FMath::Max(LastTimeFired + TimeBetweenShots - GetWorld()->TimeSeconds, 0.0f);
+
+  GetWorldTimerManager().SetTimer(TimerHandle_TimeBetweenShots, this, &ASWeapon::Fire, TimeBetweenShots, true, FirstDelay);
+}
+
+void ASWeapon::StopFire()
+{
+  GetWorldTimerManager().ClearTimer(TimerHandle_TimeBetweenShots);
 }
 
 void ASWeapon::Fire()
@@ -96,7 +111,16 @@ void ASWeapon::Fire()
     }
 
     PlayerFireEffects(TracerEndPoint);
+
+    LastTimeFired = GetWorld()->TimeSeconds;
   }
+}
+
+void ASWeapon::BeginPlay()
+{
+  Super::BeginPlay();
+
+  TimeBetweenShots = 60 / RateOfFire;
 }
 
 void ASWeapon::PlayerFireEffects(FVector TracerEndPoint)
