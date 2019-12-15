@@ -26,6 +26,9 @@ ASWeapon::ASWeapon()
 
   MuzzleSocketName = "MuzzleSocket";
   TracerTargetName = "Target";
+
+  BaseDamage = 20.0f;
+  HeadShotDamageMultipler = 4;
 }
 
 void ASWeapon::Fire()
@@ -49,16 +52,23 @@ void ASWeapon::Fire()
     FVector TracerEndPoint = TraceRange;
 
     FHitResult Hit;
-    if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceRange, ECC_Visibility, QueryParams))
+    if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceRange, COLLISION_WEAPON, QueryParams))
     {
       // Blocking hit
       AActor* HitActor = Hit.GetActor();
 
-      UGameplayStatics::ApplyPointDamage(HitActor, 20.0f, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
+      EPhysicalSurface Surface = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+
+      float ActualDamage = BaseDamage;
+
+      if (Surface == SURFACE_FLESHVULNERABLE)
+      {
+        ActualDamage *= HeadShotDamageMultipler;
+      }
+      
+      UGameplayStatics::ApplyPointDamage(HitActor, ActualDamage, ShotDirection, Hit, MyOwner->GetInstigatorController(), this, DamageType);
 
       TracerEndPoint = Hit.TraceEnd;
-
-      EPhysicalSurface Surface = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 
       UParticleSystem* SelectedEffect = nullptr;
 
@@ -132,7 +142,6 @@ void ASWeapon::PlayerFireEffects()
     if (MuzzleEffect)
     {
       UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComp, MuzzleSocketName);
-
     }
   }
 }

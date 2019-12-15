@@ -44,6 +44,12 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   TSubclassOf<UCameraShake> FireCamShake;
 
+  UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+  float BaseDamage;
+
+  UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+  float HeadShotDamageMultipler;
+
   void PlayerFireEffects(FVector TracerEndPoint);
 
   void PlayerFireEffects();
