@@ -12,16 +12,13 @@
 class UCameraComponent;
 class USpringArmComponent;
 class ASWeapon;
+class USHealthComponent;
 
 
 UCLASS()
 class COOPGAME_API ASCharacter : public ACharacter
 {
   GENERATED_BODY()
-
-public:
-  // Sets default values for this character's properties
-  ASCharacter();
 
 protected:
   // Called when the game starts or when spawned
@@ -43,11 +40,17 @@ protected:
 
   void StopFire();
 
+  UFUNCTION()
+  void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
   UCameraComponent* CameraComp = nullptr;
 
   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
   USpringArmComponent* SpringArmComp = nullptr;
+
+  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+  USHealthComponent* HealthComp = nullptr;
 
   bool bWantsToZoom;
 
@@ -65,6 +68,10 @@ protected:
 
   float DefaultFOV;
 
+  // Player has already died once
+  UPROPERTY(BlueprintReadOnly, Category = "Player")
+  bool bDied;
+
 public:
   // Called every frame
   virtual void Tick(float DeltaTime) override;
@@ -75,5 +82,8 @@ public:
   virtual FVector GetPawnViewLocation() const override;
 
   UPROPERTY(BlueprintReadOnly, Category = "Player")
-    ASWeapon* CurrentWeapon;
+  ASWeapon* CurrentWeapon;
+
+  // Sets default values for this character's properties
+  ASCharacter();
 };
