@@ -27,10 +27,10 @@ struct FHitScanTrace
 public:
 
   UPROPERTY()
-    TEnumAsByte<EPhysicalSurface> SurfaceType;
+  TEnumAsByte<EPhysicalSurface> SurfaceType;
 
   UPROPERTY()
-    FVector_NetQuantize TraceTo;
+  FVector_NetQuantize TraceTo;
 };
 
 
@@ -86,11 +86,13 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   float RateOfFire;
 
-  void PlayerFireEffects(FVector TracerEndPoint);
+  void PlayFireEffects(FVector TracerEndPoint);
 
-  void PlayerFireEffects();
+  void PlayFireEffects();
 
   virtual void Fire();
+
+  void PlayImpactEffects(EPhysicalSurface SurfaceType, FVector ImpactPoint);
 
   UFUNCTION(Server, Reliable, WithValidation)
   void ServerFire();
@@ -101,7 +103,8 @@ protected:
 
   float TimeBetweenShots;
   
-  UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
+
+  UPROPERTY(ReplicatedUsing = OnRep_HitScanTrace)
   FHitScanTrace HitScanTrace;
 
   UFUNCTION()

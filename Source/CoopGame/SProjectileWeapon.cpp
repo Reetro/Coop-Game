@@ -23,7 +23,7 @@ void ASProjectileWeapon::Fire()
 
     GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, EyeRotation, SpawnParams);
 
-    PlayerFireEffects();
+    PlayFireEffects();
 
     if (FireSound)
     {
