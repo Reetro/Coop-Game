@@ -49,6 +49,9 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "Damage")
   float DamageRadius;
 
+  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FX")
+  USoundBase* ExplosionSound;
+
 public:	
 
   // Sets default values for this actor's properties

@@ -42,7 +42,6 @@ void ASAmmoPickup::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
     {
       auto PlayerWeapon = OverlappedActor->CurrentWeapon;
 
-
       switch (PlayerWeapon->Weapontype)
       {
       case EWeaponType::Rifle:
@@ -61,5 +60,3 @@ void ASAmmoPickup::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
     }
   }
 }
-
-

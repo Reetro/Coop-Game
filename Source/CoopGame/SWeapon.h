@@ -97,7 +97,4 @@ public:
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   EWeaponType Weapontype;
 
-
-
-
 };

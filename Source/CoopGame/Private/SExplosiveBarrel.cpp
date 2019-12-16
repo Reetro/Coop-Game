@@ -76,5 +76,11 @@ void ASExplosiveBarrel::OnHealthChanged(USHealthComponent* OwningHealthComp, flo
       UDamageType::StaticClass(),
       TArray<AActor*>() // damage all actors
     );
+
+    // Play sound
+    if (ExplosionSound)
+    {
+      UGameplayStatics::PlaySoundAtLocation(this, ExplosionSound, GetActorLocation());
+    }
   }
 }
