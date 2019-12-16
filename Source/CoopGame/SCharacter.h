@@ -84,7 +84,7 @@ public:
 
   virtual FVector GetPawnViewLocation() const override;
 
-  UPROPERTY(BlueprintReadOnly, Category = "Player")
+  UPROPERTY(BlueprintReadOnly, Replicated, Category = "Player")
   ASWeapon* CurrentWeapon;
 
   // Sets default values for this character's properties

@@ -19,6 +19,20 @@ enum class EWeaponType : uint8
   Launcher
 };
 
+USTRUCT()
+struct FHitScanTrace
+{
+  GENERATED_BODY()
+
+public:
+
+  UPROPERTY()
+    TEnumAsByte<EPhysicalSurface> SurfaceType;
+
+  UPROPERTY()
+    FVector_NetQuantize TraceTo;
+};
+
 
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
@@ -78,11 +92,20 @@ protected:
 
   virtual void Fire();
 
+  UFUNCTION(Server, Reliable, WithValidation)
+  void ServerFire();
+
   FTimerHandle TimerHandle_TimeBetweenShots;
 
   float LastTimeFired;
 
   float TimeBetweenShots;
+  
+  UPROPERTY(ReplicatedUsing=OnRep_HitScanTrace)
+  FHitScanTrace HitScanTrace;
+
+  UFUNCTION()
+  void OnRep_HitScanTrace();
 
 public:	
   // Sets default values for this actor's properties

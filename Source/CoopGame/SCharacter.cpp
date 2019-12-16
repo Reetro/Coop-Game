@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "GameFramework/PawnMovementComponent.h"
 
 // Sets default values
@@ -48,14 +49,17 @@ void ASCharacter::BeginPlay()
   FActorSpawnParameters SpawnParms;
   SpawnParms.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-  CurrentWeapon = GetWorld()->SpawnActor<ASWeapon>(StaterWeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParms);
-  if (CurrentWeapon)
-  {
-    CurrentWeapon->SetOwner(this);
-    CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
-  }
-
   HealthComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+
+  if (Role == ROLE_Authority)
+  {
+    CurrentWeapon = GetWorld()->SpawnActor<ASWeapon>(StaterWeaponClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParms);
+    if (CurrentWeapon)
+    {
+      CurrentWeapon->SetOwner(this);
+      CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponAttachSocketName);
+    }
+  }
 }
 
 void ASCharacter::MoveFoward(float Value)
@@ -162,4 +166,11 @@ FVector ASCharacter::GetPawnViewLocation() const
   }
 
   return Super::GetPawnViewLocation();
+}
+
+void ASCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+  Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+  DOREPLIFETIME(ASCharacter, CurrentWeapon);
 }

@@ -10,6 +10,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "CoopGame.h"
+#include "Net/UnrealNetwork.h"
 #include "TimerManager.h"
 
 static int32 DebugWeaponDrawing = 0;
@@ -34,6 +35,8 @@ ASWeapon::ASWeapon()
   RateOfFire = 600;
 
   CurrentAmmoCount = 0;
+
+  SetReplicates(true);
 }
 
 void ASWeapon::StartFire()
@@ -50,6 +53,11 @@ void ASWeapon::StopFire()
 
 void ASWeapon::Fire()
 {
+  if (Role < ROLE_Authority) // If Client
+  {
+    ServerFire();
+  }
+
   if (CurrentAmmoCount > 0)
   {
     AActor* MyOwner = GetOwner();
@@ -119,6 +127,11 @@ void ASWeapon::Fire()
         DrawDebugLine(GetWorld(), EyeLocation, TraceRange, FColor::Red, false, 1.0f, 0, 1.0f);
       }
 
+      if (Role == ROLE_Authority)
+      {
+        HitScanTrace.TraceTo = TracerEndPoint;
+      }
+
       PlayerFireEffects(TracerEndPoint);
 
       LastTimeFired = GetWorld()->TimeSeconds;
@@ -126,6 +139,24 @@ void ASWeapon::Fire()
       CurrentAmmoCount--;
     }
   }
+}
+
+
+
+void ASWeapon::OnRep_HitScanTrace()
+{
+  // Play FX
+  PlayerFireEffects(HitScanTrace.TraceTo);
+}
+
+void ASWeapon::ServerFire_Implementation()
+{
+  Fire();
+}
+
+bool ASWeapon::ServerFire_Validate()
+{
+  return true;
 }
 
 void ASWeapon::BeginPlay()
@@ -185,4 +216,11 @@ void ASWeapon::PlayerFireEffects()
 void ASWeapon::AddToAmmoCount(int32 AmountToAdd)
 {
   CurrentAmmoCount += AmountToAdd;
+}
+
+void ASWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+  Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+  DOREPLIFETIME_CONDITION(ASWeapon, HitScanTrace, COND_SkipOwner);
 }
