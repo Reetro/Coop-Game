@@ -91,7 +91,7 @@ void ASWeapon::Fire()
       FHitResult Hit;
       if (GetWorld()->LineTraceSingleByChannel(Hit, EyeLocation, TraceEnd, COLLISION_WEAPON, QueryParams))
       {
-        // Blocking hit! Process damage
+        // Blocked Hit
         AActor* HitActor = Hit.GetActor();
 
         SurfaceType = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
@@ -130,6 +130,9 @@ void ASWeapon::Fire()
 
       LastTimeFired = GetWorld()->TimeSeconds;
     }
+
+    CurrentAmmoCount--;
+
   }
 }
 
