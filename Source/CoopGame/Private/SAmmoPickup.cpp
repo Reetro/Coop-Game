@@ -49,7 +49,7 @@ void ASAmmoPickup::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
         PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
         break;
       case EWeaponType::Launcher:
-        PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
+        PlayerWeapon->AddToAmmoCount(LauncherAmmoToAdd);
         break;
       default:
         PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
