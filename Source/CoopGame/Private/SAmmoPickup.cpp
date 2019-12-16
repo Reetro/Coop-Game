@@ -24,6 +24,8 @@ ASAmmoPickup::ASAmmoPickup()
 
   RifleAmmoToAdd = 40;
   LauncherAmmoToAdd = 8;
+
+  SetReplicates(true);
 }
 
 void ASAmmoPickup::BeginPlay()
