@@ -49,9 +49,6 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "Damage")
   float DamageRadius;
 
-  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
-  TSubclassOf<UDamageType> DamageType;
-
 public:	
 
   // Sets default values for this actor's properties

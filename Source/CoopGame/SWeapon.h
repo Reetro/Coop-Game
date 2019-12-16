@@ -12,6 +12,14 @@ class UParticleSystem;
 class UCameraShake;
 class USoundBase;
 
+UENUM()
+enum class EWeaponType : uint8
+{
+  Rifle,
+  Launcher
+};
+
+
 UCLASS()
 class COOPGAME_API ASWeapon : public AActor
 {
@@ -85,4 +93,11 @@ public:
   void StopFire();
 
   void AddToAmmoCount(int32 AmountToAdd);
+
+  UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+  EWeaponType Weapontype;
+
+
+
+
 };

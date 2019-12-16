@@ -22,7 +22,8 @@ ASAmmoPickup::ASAmmoPickup()
   MeshComp->SetupAttachment(BoxCollision);
   MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-  AmountOfAmmoToAdd = 10;
+  RifleAmmoToAdd = 40;
+  LauncherAmmoToAdd = 8;
 }
 
 void ASAmmoPickup::BeginPlay()
@@ -41,9 +42,22 @@ void ASAmmoPickup::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
     {
       auto PlayerWeapon = OverlappedActor->CurrentWeapon;
 
-      PlayerWeapon->AddToAmmoCount(AmountOfAmmoToAdd);
+
+      switch (PlayerWeapon->Weapontype)
+      {
+      case EWeaponType::Rifle:
+        PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
+        break;
+      case EWeaponType::Launcher:
+        PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
+        break;
+      default:
+        PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
+        break;
+      }
 
       Destroy();
+
     }
   }
 }
