@@ -6,7 +6,6 @@
 #include "GameFramework/Pawn.h"
 #include "STrackerBot.generated.h"
 
-class UStaticMeshComponent;
 class USHealthComponent;
 
 UCLASS()
@@ -34,6 +33,8 @@ protected:
 
   FVector NextPathPoint;
 
+  bool bExploded;
+
   UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
   float MovementForce;
 
@@ -43,8 +44,19 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
   float RequiredDistanceToTarget;
 
+  UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
+  float ExplosionRadius;
+
+  UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
+  float ExplosionDamage;
+
+UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
+  UParticleSystem* ExplosionEffect;
+
   UFUNCTION()
   void HandelTackDamage(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+  void SelfDestruct();
 
 public:	
 	// Called every frame
