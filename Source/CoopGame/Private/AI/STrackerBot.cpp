@@ -16,6 +16,15 @@
 #include "Components/SphereComponent.h"
 #include "Sound/SoundCue.h"
 
+
+static int32 DebugTrackerBotDrawing = 0;
+FAutoConsoleVariableRef CVARDebugTrackerBotDrawing(
+  TEXT("COOP.DebugTrackerBot"),
+  DebugTrackerBotDrawing,
+  TEXT("Draw Debug Lines for TrackerBot"),
+  ECVF_Cheat);
+
+
 // Sets default values
 ASTrackerBot::ASTrackerBot()
 {
@@ -53,6 +62,9 @@ void ASTrackerBot::BeginPlay()
   {
     // Get first point to move to
     NextPathPoint = GetNextPathPoint();
+
+    FTimerHandle TimerHandle_CheckPower;
+    GetWorldTimerManager().SetTimer(TimerHandle_CheckPower, this, &ASTrackerBot::OnCheckNearbyBots, 1.0f, true);
   }
 
   HealthComp->OnHealthChanged.AddDynamic(this, &ASTrackerBot::HandelTackDamage);
@@ -118,10 +130,16 @@ void ASTrackerBot::SelfDestruct()
     TArray<AActor*> IgnoredActors;
     IgnoredActors.Add(this);
 
-    UGameplayStatics::ApplyRadialDamage(GetWorld(), ExplosionDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoredActors, this, GetInstigatorController(), true);
+    float ActualDamage = ExplosionDamage + (ExplosionDamage * PowerLevel);
 
-    DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 5.0f, 0, 1.0f);
+    UGameplayStatics::ApplyRadialDamage(GetWorld(), ActualDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoredActors, this, GetInstigatorController(), true);
 
+    if (DebugTrackerBotDrawing)
+    {
+      DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 5.0f, 0, 1.0f);
+
+    }
+   
     SetLifeSpan(2.0f);
   }
 }
@@ -146,7 +164,10 @@ void ASTrackerBot::Tick(float DeltaTime)
       // Update to new point
       NextPathPoint = GetNextPathPoint();
 
-      DrawDebugString(GetWorld(), GetActorLocation(), "Target Reached");
+      if (DebugTrackerBotDrawing)
+      {
+        DrawDebugString(GetWorld(), GetActorLocation(), "Target Reached");
+      }
     }
     else
     {
@@ -158,10 +179,17 @@ void ASTrackerBot::Tick(float DeltaTime)
 
       MeshComp->AddForce(ForceDirection, NAME_None, bUseVelocityChange);
 
-      DrawDebugDirectionalArrow(GetWorld(), GetActorLocation(), GetActorLocation() + ForceDirection, 32, FColor::Red, false, 0.0f, 0, 1.0f);
+      if (DebugTrackerBotDrawing)
+      {
+        DrawDebugDirectionalArrow(GetWorld(), GetActorLocation(), GetActorLocation() + ForceDirection, 32, FColor::Red, false, 0.0f, 0, 1.0f);
+      }
     }
 
-    DrawDebugSphere(GetWorld(), NextPathPoint, 20, 12, FColor::Red, false, 0.0f, 1.0f);
+    if (DebugTrackerBotDrawing)
+    {
+      DrawDebugSphere(GetWorld(), NextPathPoint, 20, 12, FColor::Red, false, 0.0f, 1.0f);
+    }
+
   }
 }
 
@@ -184,5 +212,60 @@ void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
         UGameplayStatics::SpawnSoundAttached(SelfDestructSound, RootComponent);
       }
     }
+  }
+}
+
+void ASTrackerBot::OnCheckNearbyBots()
+{
+  // distance to check for nearby bots
+  const float Radius = 600;
+
+  // Temp collision
+  FCollisionShape CollShape;
+  CollShape.SetSphere(Radius);
+
+  FCollisionObjectQueryParams QueryParams;
+
+  QueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
+  QueryParams.AddObjectTypesToQuery(ECC_Pawn);
+
+  TArray<FOverlapResult> Overlaps;
+  GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat::Identity, QueryParams, CollShape);
+
+  if (DebugTrackerBotDrawing)
+  {
+    DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 12, FColor::White, false, 1.0f);
+  }
+
+  int32 NumberOfBots = 0;
+  for (FOverlapResult Result : Overlaps)
+  {
+    ASTrackerBot* Bot = Cast<ASTrackerBot>(Result.GetActor());
+
+    if (Bot && Bot != this)
+    {
+      NumberOfBots++;
+    }
+  }
+
+  const int32 MaxPowerLevel = 4;
+
+  PowerLevel = FMath::Clamp(NumberOfBots, 0, MaxPowerLevel);
+
+  if (MatInst == nullptr)
+  {
+    MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+  }
+
+  if (MatInst)
+  {
+    float Alpha = PowerLevel / (float)MaxPowerLevel;
+    MatInst->SetScalarParameterValue("PowerLevelAlpha", Alpha);
+  }
+
+  if (DebugTrackerBotDrawing)
+  {
+    // Draw on the bot location
+    DrawDebugString(GetWorld(), FVector(0, 0, 0), FString::FromInt(PowerLevel), this, FColor::White, 1.0f, true);
   }
 }

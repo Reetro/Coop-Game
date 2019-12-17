@@ -71,6 +71,8 @@ protected:
 
   void SelfDestruct();
 
+  void OnCheckNearbyBots();
+
   FTimerHandle TimerHandel_SelfDamage;
 
   void DamageSelf();
@@ -80,6 +82,8 @@ protected:
 
   UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
   USoundCue* ExplosionSound;
+
+  int32 PowerLevel;
 
 public:	
 	// Called every frame
