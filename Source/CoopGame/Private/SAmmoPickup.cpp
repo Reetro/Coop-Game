@@ -57,8 +57,10 @@ void ASAmmoPickup::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
         break;
       }
 
-      Destroy();
-
+      if (Role == ROLE_Authority)
+      {
+        Destroy();
+      }
     }
   }
 }
