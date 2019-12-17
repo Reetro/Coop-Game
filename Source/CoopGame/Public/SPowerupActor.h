@@ -13,11 +13,9 @@ class COOPGAME_API ASPowerupActor : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	ASPowerupActor();
+	ASPowerupActor(); 
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
   UPROPERTY(EditDefaultsOnly, Category = "PowerUps")
   float PowerupInterval;
@@ -32,6 +30,15 @@ protected:
 
   UFUNCTION()
   void OnTickPowerup();
+
+  UPROPERTY(ReplicatedUsing=OnRep_PowerupActive)
+  bool bIsPowerupActive;
+
+  UFUNCTION()
+  void OnRep_PowerupActive();
+
+  UFUNCTION(BlueprintImplementableEvent, Category = "PowerUps")
+  void OnPowerupStateChange(bool bNewIsActive);
 
 public:
 
