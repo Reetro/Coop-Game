@@ -9,6 +9,8 @@
 #include "DrawDebugHelpers.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "SHealthComponent.h"
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
@@ -20,6 +22,8 @@ ASTrackerBot::ASTrackerBot()
   MeshComp->SetCanEverAffectNavigation(false);
   MeshComp->SetSimulatePhysics(true);
   RootComponent = MeshComp;
+
+  HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
 
   bUseVelocityChange = true;
   MovementForce = 1000;
@@ -33,6 +37,8 @@ void ASTrackerBot::BeginPlay()
 	
   // Get first point to move to
   NextPathPoint = GetNextPathPoint();
+
+  HealthComp->OnHealthChanged.AddDynamic(this, &ASTrackerBot::HandelTackDamage);
 }
 
 FVector ASTrackerBot::GetNextPathPoint()
@@ -48,6 +54,22 @@ FVector ASTrackerBot::GetNextPathPoint()
 
   // Unable to find path
   return GetActorLocation();
+}
+
+void ASTrackerBot::HandelTackDamage(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+{
+  
+  if (MatInst == nullptr)
+  {
+    MatInst = MeshComp->CreateAndSetMaterialInstanceDynamicFromMaterial(0, MeshComp->GetMaterial(0));
+  }
+
+  if (MatInst)
+  {
+    MatInst->SetScalarParameterValue("LastTimeDamageTaken", GetWorld()->TimeSeconds);
+  }
+
+  UE_LOG(LogTemp, Log, TEXT("Health %s on %s"), *FString::SanitizeFloat(Health), *GetName())
 }
 
 // Called every frame
