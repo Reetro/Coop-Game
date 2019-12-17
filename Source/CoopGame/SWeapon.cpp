@@ -122,12 +122,12 @@ void ASWeapon::Fire()
         HitScanTrace.TraceTo = TracerEndPoint;
         HitScanTrace.SurfaceType = SurfaceType;
       }
-      
+     
       if (FireSound)
       {
-        UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+        UGameplayStatics::SpawnSoundAttached(FireSound, RootComponent);
       }
-
+     
       LastTimeFired = GetWorld()->TimeSeconds;
     }
 

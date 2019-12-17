@@ -27,7 +27,7 @@ void ASProjectileWeapon::Fire()
 
     if (FireSound)
     {
-      UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+      UGameplayStatics::SpawnSoundAttached(FireSound, RootComponent);
     }
 
     CurrentAmmoCount--;

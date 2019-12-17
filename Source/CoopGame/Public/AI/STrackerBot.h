@@ -11,6 +11,7 @@ class USphereComponent;
 class UStaticMeshComponent;
 class UParticleSystem;
 class UMaterialInstanceDynamic;
+class USoundCue;
 
 UCLASS()
 class COOPGAME_API ASTrackerBot : public APawn
@@ -60,6 +61,9 @@ protected:
   float ExplosionDamage;
 
   UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
+  float SelfDamageInterval;
+
+  UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
   UParticleSystem* ExplosionEffect;
 
   UFUNCTION()
@@ -70,6 +74,12 @@ protected:
   FTimerHandle TimerHandel_SelfDamage;
 
   void DamageSelf();
+
+  UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
+  USoundCue* SelfDestructSound;
+
+  UPROPERTY(EditDefaultsOnly, Category = "TrackerBot")
+  USoundCue* ExplosionSound;
 
 public:	
 	// Called every frame
