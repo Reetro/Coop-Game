@@ -16,7 +16,6 @@ USHealthComponent::USHealthComponent()
   SetIsReplicated(true);
 }
 
-
 // Called when the game starts
 void USHealthComponent::BeginPlay()
 {
