@@ -32,6 +32,8 @@ protected:
 
   FTimerHandle TimerHandel_BotSpawner;
 
+  FTimerHandle TimerHandel_NextWaveStart;
+
   // Number of bots to spawn in current wave
   int32 NumOfBotsToSpawn;
 
@@ -40,7 +42,11 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "GameMode")
   float TimeBetweenWaves;
 
+  void CheckWaveState();
+
 public:
+
+  virtual void Tick(float DeltaSeconds) override;
 
   ASGamemode();
 
