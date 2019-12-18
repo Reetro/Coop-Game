@@ -238,8 +238,6 @@ void ASWeapon::PlayImpactEffects(EPhysicalSurface SurfaceType, FVector ImpactPoi
   }
 }
 
-
-
 void ASWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
   Super::GetLifetimeReplicatedProps(OutLifetimeProps);

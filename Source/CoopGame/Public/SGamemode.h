@@ -1,10 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+  // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "SGamemode.generated.h"
+
+enum class EWaveState : uint8;
 
 /**
  * 
@@ -48,6 +50,8 @@ protected:
 
   // It's game over man it's game over
   void GameOver();
+
+  void SetWaveState(EWaveState NewState);
 
 public:
 
