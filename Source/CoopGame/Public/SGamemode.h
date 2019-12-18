@@ -43,6 +43,11 @@ protected:
   float TimeBetweenWaves;
 
   void CheckWaveState();
+  
+  void CheckAnyPlayerAlive();
+
+  // It's game over man it's game over
+  void GameOver();
 
 public:
 
