@@ -126,6 +126,18 @@ void ASGamemode::SetWaveState(EWaveState NewState)
   }
 }
 
+void ASGamemode::RestartDeadPlayers()
+{
+  for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+  {
+    APlayerController* PC = It->Get();
+    if (PC && PC->GetPawn() == nullptr)
+    {
+      RestartPlayer(PC);
+    }
+  }
+}
+
 void ASGamemode::StartPlay()
 {
   Super::StartPlay();
@@ -145,4 +157,6 @@ void ASGamemode::PrepareForNextWave()
   GetWorldTimerManager().SetTimer(TimerHandel_NextWaveStart, this, &ASGamemode::StartWave, TimeBetweenWaves, false);
 
   SetWaveState(EWaveState::WaitingToStart);
+
+  RestartDeadPlayers();
 }
