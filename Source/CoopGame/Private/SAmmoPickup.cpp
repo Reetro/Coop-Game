@@ -4,6 +4,7 @@
 #include "SAmmoPickup.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "SCharacter.h"
 #include "SWeapon.h"
 
@@ -37,30 +38,5 @@ void ASAmmoPickup::BeginPlay()
 
 void ASAmmoPickup::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-  if (OtherActor)
-  {
-    ASCharacter* OverlappedActor = Cast<ASCharacter>(OtherActor);
-    if (OverlappedActor)
-    {
-      auto PlayerWeapon = OverlappedActor->CurrentWeapon;
-
-      switch (PlayerWeapon->Weapontype)
-      {
-      case EWeaponType::Rifle:
-        PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
-        break;
-      case EWeaponType::Launcher:
-        PlayerWeapon->AddToAmmoCount(LauncherAmmoToAdd);
-        break;
-      default:
-        PlayerWeapon->AddToAmmoCount(RifleAmmoToAdd);
-        break;
-      }
-
-      if (Role == ROLE_Authority)
-      {
-        Destroy();
-      }
-    }
-  }
+  
 }

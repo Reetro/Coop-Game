@@ -12,7 +12,7 @@ class UParticleSystem;
 class UCameraShake;
 class USoundBase;
 
-UENUM()
+UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {
   Rifle,
@@ -118,9 +118,12 @@ public:
 
   void StopFire();
 
-  void AddToAmmoCount(int32 AmountToAdd);
+  void AddToLocalAmmoCount(int32 AmountToAdd);
 
-  UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
   EWeaponType Weapontype;
+
+  UFUNCTION(BlueprintCallable, Category = "Weapon")
+  void AddToPlayerAmmoCount(int32 RifleAmmoToAdd, int32 LauncherAmmoToAdd);
 
 };

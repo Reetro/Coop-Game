@@ -8,6 +8,7 @@
 
 class UStaticMeshComponent;
 class UBoxComponent;
+class USoundCue;
 
 UCLASS()
 class COOPGAME_API ASAmmoPickup : public AActor
@@ -25,6 +26,9 @@ protected:
   
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Collision")
   UBoxComponent* BoxCollision;
+
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+  USoundCue* PickUpSound;
 
   virtual void BeginPlay() override;
 

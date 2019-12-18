@@ -208,9 +208,25 @@ void ASWeapon::PlayFireEffects()
   }
 }
 
-void ASWeapon::AddToAmmoCount(int32 AmountToAdd)
+void ASWeapon::AddToLocalAmmoCount(int32 AmountToAdd)
 {
   CurrentAmmoCount += AmountToAdd;
+}
+
+void ASWeapon::AddToPlayerAmmoCount(int32 RifleAmmoToAdd, int32 LauncherAmmoToAdd)
+{
+  switch (Weapontype)
+  {
+  case EWeaponType::Rifle:
+    AddToLocalAmmoCount(RifleAmmoToAdd);
+    break;
+  case EWeaponType::Launcher:
+    AddToLocalAmmoCount(LauncherAmmoToAdd);
+    break;
+  default:
+    AddToLocalAmmoCount(RifleAmmoToAdd);
+    break;
+  }
 }
 
 void ASWeapon::PlayImpactEffects(EPhysicalSurface SurfaceType, FVector ImpactPoint)
