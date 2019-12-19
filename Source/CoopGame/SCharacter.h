@@ -37,10 +37,6 @@ protected:
 
   void EndZoom();
 
-  void StartFire();
-
-  void StopFire();
-
   /* Player Health Function */
   UFUNCTION()
   void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
@@ -86,6 +82,12 @@ public:
 
   UPROPERTY(BlueprintReadOnly, Replicated, Category = "Player")
   ASWeapon* CurrentWeapon;
+
+  UFUNCTION(BlueprintCallable, Category = "Player")
+  void StartFire();
+
+  UFUNCTION(BlueprintCallable, Category = "Player")
+  void StopFire();
 
   // Sets default values for this character's properties
   ASCharacter();
