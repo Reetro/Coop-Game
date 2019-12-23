@@ -48,8 +48,6 @@ void ASPickupActor::Respawn()
   SpawnParms.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
   PowerupInstance = GetWorld()->SpawnActor<ASPowerupActor>(PowerupClass, GetTransform(), SpawnParms);
-
-  UE_LOG(LogTemp, Log, TEXT("Test"))
 }
 
 void ASPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
