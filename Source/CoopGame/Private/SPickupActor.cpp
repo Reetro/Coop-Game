@@ -52,18 +52,14 @@ void ASPickupActor::Respawn()
 
 void ASPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-  Super::NotifyActorBeginOverlap(OtherActor);
+	Super::NotifyActorBeginOverlap(OtherActor);
 
-  auto PlayerPawn = Cast<ASCharacter>(OtherActor);
+	if (Role == ROLE_Authority && PowerupInstance)
+	{
+    PowerupInstance->ActivatePowerup(OtherActor);
+    PowerupInstance = nullptr;
 
-  if (Role == ROLE_Authority && PowerupClass && PlayerPawn->IsPlayerControlled())
-  {
-    if (PowerupInstance)
-    {
-      PowerupInstance->ActivatePowerup(PlayerPawn);
-      PowerupInstance = nullptr;
-    }
-
-    GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &ASPickupActor::Respawn, CoolDownDuration);
-  }
+		// Set Timer to respawn powerup
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnTimer, this, &ASPickupActor::Respawn, CoolDownDuration);
+	}
 }
