@@ -124,6 +124,7 @@ public:
 
   void StartFire();
 
+  UFUNCTION(BlueprintCallable, Category = "Weapon")
   void StopFire();
 
   void AddToLocalAmmoCount(int32 AmountToAdd);
