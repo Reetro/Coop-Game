@@ -67,7 +67,7 @@ protected:
   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
   UParticleSystem* TracerEffect;
 
-  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (ClampMin = 0))
+  UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon", meta = (ClampMin = 0, EditCondition = "bUseAmmoCount"))
   int32 CurrentAmmoCount;
 
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -81,6 +81,14 @@ protected:
 
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   float HeadShotDamageMultipler;
+
+  // Bullet spread in degrees
+  UPROPERTY(EditDefaultsOnly, Category = "Weapon", meta = (ClampMin = 0.0f))
+  float BulletSpread;
+
+  // whether or not the chosen pawn should care about an ammo count
+  UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+  bool bUseAmmoCount;
 
   // RPM - Bullets per minute fired by weapon
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")

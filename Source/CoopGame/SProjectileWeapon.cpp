@@ -3,11 +3,13 @@
 
 #include "SProjectileWeapon.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
+#include "Components/SkeletalMeshComponent.h"
 
 void ASProjectileWeapon::Fire()
 {
   AActor* MyOwner = GetOwner();
-  if (MyOwner && ProjectileClass && CurrentAmmoCount > 0)
+  if (MyOwner && ProjectileClass && CurrentAmmoCount > 0 || !bUseAmmoCount)
   {
     FVector EyeLocation;
     FRotator EyeRotation;

@@ -31,10 +31,12 @@ ASWeapon::ASWeapon()
 
   BaseDamage = 20.0f;
   HeadShotDamageMultipler = 4;
+  BulletSpread = 1.0f;
 
   RateOfFire = 600;
 
-  CurrentAmmoCount = 0;
+  bUseAmmoCount = true;
+  CurrentAmmoCount = 0;   
 
   SetReplicates(true);
 
@@ -56,7 +58,7 @@ void ASWeapon::StopFire()
 
 void ASWeapon::Fire()
 {
-  if (CurrentAmmoCount > 0)
+  if (CurrentAmmoCount > 0 || !bUseAmmoCount)
   {
     
     // Trace the world, from pawn eyes to crosshair location
@@ -75,6 +77,10 @@ void ASWeapon::Fire()
 
       FVector ShotDirection = EyeRotation.Vector();
 
+      // Bullet Spread
+      float HalfRad = FMath::DegreesToRadians(BulletSpread);
+      ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
+   
       FVector TraceEnd = EyeLocation + (ShotDirection * 10000);
 
       FCollisionQueryParams QueryParams;
