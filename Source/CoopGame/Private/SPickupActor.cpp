@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "SPowerupActor.h"
 #include "TimerManager.h"
+#include "SCharacter.h"
 #include "Components/DecalComponent.h"
 
 // Sets default values
@@ -55,11 +56,13 @@ void ASPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
   Super::NotifyActorBeginOverlap(OtherActor);
 
-  if (Role == ROLE_Authority && PowerupClass)
+  auto PlayerPawn = Cast<ASCharacter>(OtherActor);
+
+  if (Role == ROLE_Authority && PowerupClass && PlayerPawn->IsLocallyControlled())
   {
     if (PowerupInstance)
     {
-      PowerupInstance->ActivatePowerup(OtherActor);
+      PowerupInstance->ActivatePowerup(PlayerPawn);
       PowerupInstance = nullptr;
     }
 
