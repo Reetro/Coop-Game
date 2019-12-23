@@ -56,7 +56,7 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "Player")
   float ZoomFOV;
 
-  UPROPERTY(EditDefaultsOnly, Category = "Player")
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Player")
   TSubclassOf<ASWeapon> StaterWeaponClass;
 
   UPROPERTY(EditDefaultsOnly, Category = "Player", meta = (ClampMin = 0.1, ClampMax = 100))
