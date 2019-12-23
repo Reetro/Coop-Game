@@ -56,7 +56,7 @@ void ASPickupActor::NotifyActorBeginOverlap(AActor* OtherActor)
 
   auto PlayerPawn = Cast<ASCharacter>(OtherActor);
 
-  if (Role == ROLE_Authority && PowerupClass && PlayerPawn->IsLocallyControlled())
+  if (Role == ROLE_Authority && PowerupClass && PlayerPawn->IsPlayerControlled())
   {
     if (PowerupInstance)
     {

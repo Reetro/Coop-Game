@@ -112,8 +112,6 @@ void ASGamemode::GameOver()
 {
   EndWave();
 
-  UE_LOG(LogTemp, Log, TEXT("Game Over all the players are bad"))
-
   SetWaveState(EWaveState::GameOver);
 }
 
